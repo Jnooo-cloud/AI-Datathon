@@ -1,0 +1,105 @@
+
+### 0. Entwicklungsumgebung & Grundlagen
+Bevor du startest, hier die Basis-Tools, die du vermutlich nutzen wirst:
+*   **Anaconda:** Plattform zur Verwaltung von Paketen und Umgebungen.
+*   **Jupyter Notebook / JupyterLab:** Die Standard-IDE für die explorative Analyse und Dokumentation.
+*   **Visual Studio Code (VS Code):** Als alternative IDE.
+*   **GitHub / GitHub Desktop:** Für Versionierung (falls gefordert).
+
+---
+
+### 1. Business Understanding (Geschäftsverständnis)
+*In dieser Phase geht es meist um Konzepte, aber technisch relevant sind hier Tools zur Kollaboration oder Dokumentation.*
+*   **Markdown (in Jupyter):** Zur Dokumentation der Business Questions und Ziele direkt im Notebook.
+
+---
+
+### 2. Data Understanding (Datenverständnis)
+*Hier lädst du die Daten und verschaffst dir einen ersten Überblick (EDA).*
+
+*   **Pandas (`import pandas as pd`):**
+    *   Daten laden: `pd.read_csv()`, `pd.read_excel()`.
+    *   Erster Überblick: `df.head()`, `df.describe()`, `df.info()`.
+*   **OS & Glob (`import os`, `import glob`):**
+    *   Um mit dem Dateisystem zu interagieren oder mehrere Dateien (z.B. alle `.csv` in einem Ordner) zu finden.
+*   **Matplotlib (`import matplotlib.pyplot as plt`):**
+    *   Grundlegende Plots (Scatterplots, Lineplots) zur Visualisierung von Verteilungen.
+*   **Seaborn (`import seaborn as sns`):**
+    *   Erweiterte statistische Visualisierungen, z.B. `sns.distplot()` für Verteilungen oder Heatmaps für Korrelationen.
+
+---
+
+### 3. Data Preparation (Datenvorbereitung)
+*Dies ist oft der aufwendigste Teil (Cleaning, Feature Engineering, Split).*
+
+*   **Pandas:**
+    *   Fehlende Werte behandeln: `isnull().sum()`, `dropna()`, `fillna()`.
+    *   Features löschen: `drop()`.
+    *   Kategorische Daten umwandeln (One-Hot-Encoding): `pd.get_dummies(drop_first=True)`.
+*   **NumPy (`import numpy as np`):**
+    *   Mathematische Transformationen, z.B. Log-Transformation bei schiefen Verteilungen (`np.log()`).
+*   **Scikit-Learn (`sklearn`):**
+    *   **Scaling:** `StandardScaler` (z-Score Standardisierung) aus `sklearn.preprocessing`.
+    *   **Split:** `train_test_split` aus `sklearn.model_selection`, um Überanpassung (Overfitting) zu vermeiden.
+    *   **Imputation:** (z.B. KNN Imputer) zum Auffüllen fehlender Werte.
+*   **Imbalanced-learn (`imblearn`):**
+    *   Zum Ausbalancieren von Datensätzen (Oversampling/Undersampling), falls Klassen ungleich verteilt sind.
+*   **NLP-Preprocessing (falls Textdaten vorliegen):**
+    *   Stop Words filtern, Stemming, Lemmatization, Tokenization.
+    *   `CountVectorizer` oder `TfidfVectorizer` zur Umwandlung von Text in Zahlen.
+
+---
+
+### 4. Modeling (Modellierung)
+*Hier trainierst du die eigentlichen Algorithmen.*
+
+**Klassische Machine Learning Modelle:**
+*   **Scikit-Learn (`sklearn`):**
+    *   *Lineare Regression:* `LinearRegression`.
+    *   *Logistische Regression:* `LogisticRegression` (für Klassifikation).
+    *   *Entscheidungsbäume & Random Forest:* `DecisionTreeClassifier`, `RandomForestClassifier`.
+    *   *SVM:* Support Vector Machines.
+    *   *Clustering (Unsupervised):* `KMeans`.
+*   **Statsmodels (`import statsmodels.api as sm`):**
+    *   Gut für statistische Analysen (OLS Regression, Logit) mit detaillierten Summary-Outputs (p-Values, R-Squared).
+*   **Lazy Predict:**
+    *   Um schnell viele Modelle gleichzeitig zu testen (`lazypredict`).
+
+**Deep Learning & Neuronale Netze:**
+*   **TensorFlow & Keras:**
+    *   Erstellung von Dense Layers, CNNs (für Bilder).
+    *   `tensorflow_datasets` und `tensorflow_hub` für vortrainierte Modelle.
+
+**Agentic AI & LLMs (falls relevant):**
+*   **LangChain / LangGraph:** Frameworks zur Erstellung von AI Agents.
+*   **IBM watsonx.ai:** Nutzung von Foundation Models und Agent Lab.
+
+---
+
+### 5. Evaluation (Evaluierung)
+*Überprüfung, wie gut dein Modell funktioniert.*
+
+*   **Scikit-Learn Metrics (`sklearn.metrics`):**
+    *   `confusion_matrix`: Um TP, TN, FP, FN zu sehen.
+    *   `accuracy_score`, `precision_score`, `recall_score`, `f1_score`: Die wichtigsten Kennzahlen für Klassifikation.
+    *   `classification_report`: Gibt eine Übersicht aller Metriken aus.
+*   **Matplotlib / Seaborn:**
+    *   Visualisierung der "Elbow Method" bei Clustering.
+    *   Plotten von "Actual vs. Predicted" Werten.
+*   **SHAP:**
+    *   Zur Erklärbarkeit von Modellen (Explainability/Feature Importance).
+*   **Weights & Biases (`wandb`):**
+    *   Zum Tracken von Experimenten und Hyperparametern.
+
+---
+
+### 6. Deployment (Bereitstellung)
+*Den Business Case abschließen, indem das Modell nutzbar gemacht wird.*
+
+*   **Gradio:**
+    *   Erstellung von schnellen User Interfaces (UIs) für Demos.
+*   **Docker:**
+    *   Containerisierung der Anwendung für den produktiven Einsatz.
+*   **IBM Watson Machine Learning:**
+    *   Deployment Space in der IBM Cloud (REST API).
+
