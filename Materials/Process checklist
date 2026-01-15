@@ -1,0 +1,78 @@
+### Schritt 1: Business Understanding (Was ist das Ziel?)
+Schau dir die Spalten im Datensatz an und lies die Aufgabenstellung. Suche die **Zielvariable** (das, was du vorhersagen sollst).
+
+*   **Szenario A: Die Zielvariable ist eine Zahl (kontinuierlich)**
+    *   *Beispiel:* Preis eines Autos, Temperatur, Umsatz.
+    *   *Deine Aufgabe:* **Regression** (Supervised Learning).
+    *   *Algorithmen:* Linear Regression (Simple oder Multiple),.
+
+*   **Szenario B: Die Zielvariable ist eine Kategorie (Klasse)**
+    *   *Beispiel:* Kunde kauft (Ja/Nein), Betrug (Ja/Nein), Bild ist Hund/Katze.
+    *   *Deine Aufgabe:* **Classification** (Supervised Learning).
+    *   *Algorithmen:* Logistic Regression, Decision Trees, Random Forest, SVM, KNN.
+
+*   **Szenario C: Es gibt KEINE Zielvariable**
+    *   *Beispiel:* "Segmentieren Sie unsere Kunden" oder "Finden Sie Muster".
+    *   *Deine Aufgabe:* **Clustering** (Unsupervised Learning).
+    *   *Algorithmen:* K-Means Clustering.
+
+---
+
+### Schritt 2: Data Understanding & Preparation (Was muss ich fixen?)
+Bevor du das Modell baust, musst du die Daten bereinigen. Gehe diese Checkliste durch:
+
+**1. Fehlen Werte? (Missing Values)**
+*   *Prüfung:* `data.isnull().sum()`.
+*   *Lösung:*
+    *   Wenn es wenige sind (< 5%): Zeilen löschen (`dropna`).
+    *   Wenn es viele sind: **Imputation**. Ersetze sie durch Mittelwert/Median (`fillna`) oder nutze fortgeschrittene Methoden wie KNN Imputer oder MICE,.
+
+**2. Gibt es Text-Kategorien? (Categorical Data)**
+*   *Problem:* Modelle können nur mit Zahlen rechnen, nicht mit Text wie "BMW", "Audi".
+*   *Lösung:* **Encoding**.
+    *   Nutze `pd.get_dummies(drop_first=True)` für One-Hot Encoding (macht aus einer Spalte mehrere mit 0/1). `drop_first=True` ist wichtig, um Multikollinearität zu vermeiden.
+
+**3. Gibt es Ausreißer? (Outliers)**
+*   *Prüfung:* `describe()` oder Boxplots/Distribution Plots (`sns.distplot`),.
+*   *Lösung:* Entferne extreme Werte, z.B. alles über dem 99. Perzentil (`quantile(0.99)`), da diese (besonders bei OLS Regression) das Modell verzerren.
+
+**4. Passen die Skalen? (Scaling)**
+*   *Problem:* Eine Spalte ist "Alter" (20-80), eine andere "Gehalt" (30.000 - 100.000). Das Gehalt dominiert rechnerisch.
+*   *Lösung:* **Standardization** (Feature Scaling). Nutze den `StandardScaler`, um Mittelwert auf 0 und Standardabweichung auf 1 zu setzen,.
+    *   *Wichtig:* Besonders essenziell für K-Means Clustering und SVM, aber oft auch gut für Regressionen.
+
+**5. Überprüfung der OLS-Annahmen (Nur bei Regression)**
+*   Prüfe auf **Linearität** (Scatterplots).
+*   Prüfe auf **Multikollinearität** (Korrelieren die Inputs zu stark miteinander?).
+    *   *Tool:* Berechne den **VIF** (Variance Inflation Factor). Werte > 10 (oder > 5) sind schlecht -> Variable droppen.
+*   Prüfe auf **Verteilung**: Ist die Zielvariable schief (z.B. exponentiell)? Dann mache eine **Log-Transformation** (`np.log`), um sie zu normalisieren.
+
+---
+
+### Schritt 3: Modeling & Evaluation (Welches Ergebnis zählt?)
+
+Hier wählst du die Metriken passend zu Schritt 1.
+
+**Für Regression (Zahlen vorhersagen):**
+*   Nutze `statsmodels` für detaillierte Statistik-Tabellen oder `sklearn` für Vorhersagen.
+*   **Bewertung:** Schau auf das **R-Squared** (wie viel Varianz erklärt dein Modell? 0.2 bis 0.6 ist in Sozialwissenschaften oft schon relevant).
+
+**Für Classification (Kategorien vorhersagen):**
+*   Trenne Daten zwingend in **Train & Test** Set (`train_test_split`), um Overfitting zu vermeiden.
+*   **Bewertung:** Schau nicht nur auf Accuracy!
+    *   Erstelle eine **Confusion Matrix**.
+    *   Nutze den `classification_report`.
+    *   Ist **Precision** wichtig? (Wenn False Positives teuer sind, z.B. Spam-Filter).
+    *   Ist **Recall** wichtig? (Wenn False Negatives gefährlich sind, z.B. Betrugserkennung/Krankheit übersehen).
+    *   Der **F1-Score** gibt dir eine Balance aus beidem.
+
+**Für Clustering (Gruppen finden):**
+*   Nutze die **Elbow Method**, um die optimale Anzahl an Clustern (`k`) zu finden (dort wo der Knick im Graphen ist).
+
+**Zusammenfassender "Spickzettel" für den Start morgen:**
+1.  Daten laden (`pandas`).
+2.  `df.info()` & `df.describe()` -> Sind Daten sauber? Zahlen oder Text?
+3.  Zielvariable identifizieren -> Regression oder Klassifikation?
+4.  Cleaning (NaNs raus, Dummies erstellen, Scalen).
+5.  Modell trainieren (`fit`).
+6.  Evaluieren (R² oder F1-Score/Confusion Matrix).
