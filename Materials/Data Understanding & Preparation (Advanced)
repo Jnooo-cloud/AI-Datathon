@@ -1,0 +1,147 @@
+### Phase 2 & 3: Data Understanding & Preparation (Advanced)
+
+Hier geht es nicht nur ums Laden, sondern um statistische Validierung und komplexes Cleaning.
+
+**Statistische Validierung & OLS Assumptions (für Regressionen)**
+*   **VIF (Variance Inflation Factor):** Zur Prüfung auf **Multikollinearität** (wenn unabhängige Variablen zu stark korrelieren). Ein VIF > 10 (manchmal > 5) ist kritisch,.
+    *   *Library:* `statsmodels.stats.outliers_influence`
+*   **Linearitäts-Check:** Prüfung mittels Scatter-Plots (Linearity).
+*   **Homoskedastizität:** Prüfung auf gleichmäßige Varianz der Fehlerterme (Error Terms).
+*   **Normalverteilung der Fehler:** Prüfung, ob Residuen normalverteilt sind (Zero Mean).
+*   **Log-Transformation:** Bei exponentiell verteilten Daten (z.B. Preise), um Linearität herzustellen,.
+
+**Advanced Data Cleaning & Imputation**
+*   **Outlier Removal:** Entfernen von Ausreißern basierend auf Perzentilen (z.B. Löschen der oberen 1% mittels `quantile(0.99)`).
+*   **Imputation Strategien (Missing Values):**
+    *   Standard: Mean, Median, Mode.
+    *   Advanced: **KNN Imputation** (K-Nearest Neighbors) oder **MICE** (Multiple Imputation by Chained Equations) – dies sind statistisch sauberere Methoden als einfaches "Fillna",.
+*   **Encoding:**
+    *   **One-Hot Encoding:** Für kategoriale Variablen (via `pd.get_dummies` mit `drop_first=True` zur Vermeidung der "Dummy Variable Trap"),.
+    *   **Binary Encoding:** Bei sehr vielen Kategorien als Alternative.
+
+**Handling Imbalanced Data (Classification Specific)**
+*   **Problem:** Eine Klasse dominiert (z.B. 99% "Kein Betrug", 1% "Betrug"). Modelle ignorieren die Minderheit.
+*   **Lösung:** Resampling Strategien.
+    *   **Undersampling:** Löschen von Daten der Mehrheitsklasse.
+    *   **Oversampling:** Duplizieren der Minderheitsklasse.
+    *   *Library:* **`imblearn`** (imbalanced-learn).
+
+---
+
+### Phase 4: Modeling (Advanced Algorithms & Concepts)
+
+Hier sind die spezifischen Algorithmen und Konzepte, die in den Slides neben den Standards erwähnt wurden.
+
+**Classification Algorithms (Supervised)**
+*   **Logistic Regression:** Basismodell, nutzt die Sigmoid-Funktion, um Wahrscheinlichkeiten (Odds) vorherzusagen. Annahmen ähnlich wie bei linearer Regression,.
+*   **Decision Trees:** Einfach interpretierbar, neigen aber zu Overfitting.
+*   **Random Forest:** Ensemble-Methode (viele Bäume), robust gegen Overfitting, liefert Feature Importance.
+*   **SVM (Support Vector Machines):** Gut für hochdimensionale Daten, nutzt Kernel-Tricks.
+*   **KNN (K-Nearest Neighbors):** Klassifiziert basierend auf Mehrheit der Nachbarn, rechenintensiv bei großen Daten.
+*   **Naive Bayes:** Probabilistischer Klassifikator, basiert auf Bayes-Theorem, gut als Baseline.
+*   **Gradient Boosting (GBM) / XGBoost:** Baut Bäume sequenziell (jeder korrigiert den Fehler des Vorgängers). Oft leistungsstärker als Random Forest, erwähnt im Kontext von Kaggle.
+
+**Clustering (Unsupervised)**
+*   **K-Means:** Gruppiert Daten basierend auf Zentroiden und euklidischer Distanz.
+    *   *Wichtig:* Daten vorher **skalieren** (StandardScaler), da Distanzen sonst verzerrt sind.
+    *   *Optimierung:* **Elbow Method** (Visualisierung der WCSS - Within-Cluster Sum of Squares), um das optimale `k` zu finden.
+
+**Deep Learning & Neural Networks**
+*   **Architektur:** Input Layer, Hidden Layers, Output Layer.
+*   **Aktivierungsfunktionen:**
+    *   **ReLU:** Standard für Hidden Layers (vermeidet Vanishing Gradient).
+    *   **Softmax:** Für den Output Layer bei Multi-Class-Problemen (erzeugt Wahrscheinlichkeitsverteilung).
+    *   **Sigmoid:** Für binäre Klassifikation.
+*   **Training:**
+    *   **Backpropagation:** Algorithmus zur Fehler-Rückführung und Gewichtsanpassung.
+    *   **Optimizer:** **ADAM** (Adaptive Moment Estimation) ist der Standard-Optimierer.
+    *   **Learning Rate:** Steuert, wie stark Gewichte angepasst werden (Vorsicht vor Oszillation oder zu langsamem Lernen).
+*   **Spezialarchitekturen:**
+    *   **CNN (Convolutional Neural Networks):** Für Bilder (Convolution, Pooling, Flattening),.
+
+**NLP & GenAI (Textdaten)**
+*   **Preprocessing:** Tokenization, Stemming vs. Lemmatization (Lemmatization ist präziser), Stop Word Removal,,.
+*   **Feature Extraction:**
+    *   **Bag of Words (BoW):** Worthäufigkeiten.
+    *   **TF-IDF:** Gewichtet Wörter nach Relevanz (häufig im Dokument, aber selten im Korpus).
+    *   **Embeddings:** Vektor-Repräsentation von Bedeutung (z.B. OpenAI Embeddings).
+*   **RAG (Retrieval Augmented Generation):** Kombination aus Information Retrieval (Vektorsuche in z.B. Chroma DB) und Generierung durch LLM,.
+*   **Agentic AI:** Autonome Systeme, die Tools nutzen und komplexe Ziele verfolgen (mehr als nur Chatbots),.
+
+---
+
+### Phase 5: Evaluation (Advanced Metrics)
+
+Verlasse dich nicht nur auf "Accuracy".
+
+**Für Classification**
+*   **Confusion Matrix:** TP (True Positive), TN, FP, FN,.
+*   **Precision:** Relevant, wenn **False Positives** teuer sind (z.B. Spam-Filter – keine wichtige Mail löschen).
+*   **Recall (Sensitivity):** Relevant, wenn **False Negatives** gefährlich sind (z.B. Betrugserkennung, Krankheitsdiagnose – keinen Fall übersehen).
+*   **F1-Score:** Harmonisches Mittel aus Precision und Recall (bester Balance-Indikator).
+*   **Classification Report:** Gibt alle oben genannten Metriken auf einmal aus (`sklearn.metrics.classification_report`).
+
+**Für Regression**
+*   **R-Squared & Adjusted R-Squared:** Erklärungskraft des Modells.
+*   **P-Values:** Signifikanz der einzelnen Variablen (Hypothesentests: Nullhypothese ablehnen, wenn p < 0.05),.
+
+**Model Tuning & Check**
+*   **Train-Test-Split:** Zwingend notwendig, um **Overfitting** zu erkennen (Modell lernt Daten auswendig) vs. **Underfitting** (Modell lernt nichts),.
+*   **Cross-Validation:** (implizit erwähnt durch Validierungssets).
+
+---
+
+### Phase 6: Deployment & Tools
+
+*   **Tools:**
+    *   **Gradio:** Für schnelle Web-UIs zur Demo des Modells.
+    *   **Docker:** Zur Containerisierung der Anwendung.
+    *   **LangChain:** Framework zur Orchestrierung von LLM-Workflows.
+    *   **Weights & Biases (`wandb`):** Zum Tracken von Experimenten.
+
+### Zusammenfassung der "Must-Have" Imports für morgen:
+
+```python
+# Data Handling
+import pandas as pd
+import numpy as np
+import os, glob
+
+# Visualization
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Stats & Multicollinearity
+import statsmodels.api as sm
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+
+# Preprocessing & Split
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.impute import KNNImputer # Optional Advanced
+
+# Imbalanced Data
+from imblearn.over_sampling import RandomOverSampler, SMOTE # Falls installiert
+
+# Models (Classification focus)
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
+
+# Clustering
+from sklearn.cluster import KMeans
+
+# Evaluation
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
+
+# Deep Learning (falls nötig)
+import tensorflow as tf
+from tensorflow import keras
+
+# Deployment / Utils
+import dotenv
+import gradio as gr
+```
